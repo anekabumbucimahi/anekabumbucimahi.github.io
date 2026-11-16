@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aneka Bumbu Cimahi - Belanja Bumbu Dapur & Rempah Segar</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        tokped: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#03ac0e', // Hijau khas marketplace
+                            600: '#028a0b',
+                            700: '#026c09',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-tokped-100 selection:text-tokped-700">
+
+    <!-- Top Info Bar -->
+    <div class="bg-slate-100 border-b border-slate-200 text-xs text-slate-600 py-1.5 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-tokped-500"></i>
+                <span>Dikirim dari <strong>Kota Cimahi, Jawa Barat</strong> • Siap Kirim Instan & Reguler</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://wa.me/6285624383827" target="_blank" class="hover:text-tokped-600 flex items-center gap-1 transition">
+                    <i data-lucide="phone" class="w-3 h-3"></i> Hubungi Admin: 0856-2438-3827
+                </a>
+                <button onclick="openAdminLogin()" class="text-slate-700 font-semibold hover:text-tokped-600 flex items-center gap-1 transition">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-tokped-500"></i> Admin Panel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Sticky Navbar -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 md:gap-6">
+            <!-- Brand Logo -->
+            <a href="#" onclick="resetFilters(); return false;" class="flex items-center gap-2.5 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tokped-500 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-tokped-500/20">
+                    <i data-lucide="sprout" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg md:text-xl tracking-tight text-tokped-600 leading-none">Aneka Bumbu</h1>
+                    <p class="text-[11px] font-medium text-slate-500 tracking-wide">CIMAHI • SEGAR & LENGKAP</p>
+                </div>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl relative">
+                <div class="relative flex items-center">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)"
+                        placeholder="Cari bawang merah, kapulaga, lada, gula aren..." 
+                        class="w-full pl-10 pr-10 py-2.5 bg-slate-100/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:border-tokped-500 focus:ring-2 focus:ring-tokped-500/20 transition">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- Cart Button -->
+                <button onclick="toggleCart(true)" class="relative p-2.5 rounded-xl hover:bg-slate-100 text-slate-700 transition flex items-center gap-2 border border-transparent hover:border-slate-200">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700"></i>
+                    <span class="hidden md:inline text-sm font-semibold">Keranjang</span>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 md:static md:ml-0.5 bg-red-500 text-white text-[11px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center shadow-sm">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        
+        <!-- Hero Banner -->
+        <section class="mb-6 rounded-2xl bg-gradient-to-r from-tokped-600 via-tokped-500 to-emerald-500 text-white p-6 md:p-8 shadow-lg shadow-tokped-500/15 relative overflow-hidden">
+            <div class="relative z-10 max-w-2xl">
+                <span class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Kualitas Pilihan Pasar Cimahi
+                </span>
+                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-2 leading-snug">
+                    Bumbu Dapur Segar & Rempah Pilihan Langsung ke Dapur Anda
+                </h2>
+                <p class="text-tokped-50 text-sm md:text-base mb-5 leading-relaxed">
+                    Tersedia bumbu segar kiloan (mulai 0.5 kg) dan aneka rempah kering kemasan praktis (15gr - 50gr). Bayar mudah pakai QRIS!
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="document.getElementById('katalogSection').scrollIntoView({behavior:'smooth'})" class="bg-white text-tokped-700 hover:bg-tokped-50 font-bold text-sm px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i> Mulai Belanja
+                    </button>
+                    <button onclick="openAdminLogin()" class="bg-tokped-700/60 hover:bg-tokped-700 text-white border border-white/30 font-medium text-sm px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i data-lucide="settings" class="w-4 h-4"></i> Kelola Harga (Admin)
+                    </button>
+                </div>
+            </div>
+            <!-- Decorative Circles -->
+            <div class="hidden md:block absolute -right-10 -bottom-16 w-72 h-72 rounded-full bg-white/10 pointer-events-none"></div>
+            <div class="hidden md:block absolute right-28 -top-12 w-40 h-40 rounded-full bg-emerald-300/20 pointer-events-none"></div>
+        </section>
+
+        <!-- Category Filter Tabs -->
+        <section id="katalogSection" class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                <button onclick="setCategory('all')" id="cat-all" class="cat-btn active px-4 py-2 rounded-xl text-sm font-semibold transition whitespace-nowrap bg-tokped-500 text-white shadow-sm">
+                    Semua Produk (15)
+                </button>
+                <button onclick="setCategory('kg')" id="cat-kg" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:border-tokped-500 hover:text-tokped-600">
+                    Bumbu Segar / Kg (4)
+                </button>
+                <button onclick="setCategory('pcs')" id="cat-pcs" class="cat-btn px-4 py-2 rounded-xl text-sm font-semibold transition whitespace-nowrap bg-white text-slate-600 border border-slate-200 hover:border-tokped-500 hover:text-tokped-600">
+                    Rempah Kemasan / Pcs (11)
+                </button>
+            </div>
+            <div class="text-xs text-slate-500 flex items-center gap-1.5">
+                <i data-lucide="info" class="w-4 h-4 text-tokped-500"></i>
+                <span>Pilih berat (Kg atau Gram) sebelum menambahkan ke keranjang</span>
+            </div>
+        </section>
+
+        <!-- Product Grid -->
+        <section id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <!-- Products injected by JS -->
+        </section>
+
+        <!-- Empty Search State -->
+        <div id="emptyState" class="hidden py-16 text-center bg-white rounded-2xl border border-slate-200">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                <i data-lucide="search-x" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Bumbu tidak ditemukan</h3>
+            <p class="text-sm text-slate-500 mb-4">Coba kata kunci lain seperti "Bawang", "Lada", atau "Gula Aren".</p>
+            <button onclick="resetFilters()" class="px-4 py-2 bg-tokped-500 text-white rounded-xl text-sm font-semibold hover:bg-tokped-600 transition">
+                Tampilkan Semua Bumbu
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-14 pt-10 pb-8 text-sm text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-tokped-500 flex items-center justify-center text-white">
+                        <i data-lucide="sprout" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-extrabold text-lg text-tokped-600">Aneka Bumbu Cimahi</span>
+                </div>
+                <p class="text-slate-500 leading-relaxed mb-3">
+                    Menyediakan berbagai macam bumbu dapur segar dan rempah-rempah kering berkualitas tinggi untuk kebutuhan rumah tangga maupun usaha kuliner di Cimahi & sekitarnya.
+                </p>
+                <p class="text-xs text-slate-400">Domain: www.anekabumbucimahi.github.io</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-800 mb-3">Layanan & Pembayaran</h4>
+                <ul class="space-y-2 text-slate-500">
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-tokped-500"></i> Pembelian Kiloan (0.5 kg, 1 kg, dst)</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-tokped-500"></i> Kemasan Rempah Praktis (15gr - 50gr)</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-tokped-500"></i> Pembayaran Instan via Scan QRIS</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-tokped-500"></i> Konfirmasi Cepat via WhatsApp & Email</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-800 mb-3">Kontak & Pengelola Toko</h4>
+                <ul class="space-y-2.5 text-slate-500">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="phone" class="w-4 h-4 text-tokped-500 shrink-0 mt-0.5"></i>
+                        <span>WhatsApp Admin: <strong class="text-slate-700">085624383827</strong></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="mail" class="w-4 h-4 text-tokped-500 shrink-0 mt-0.5"></i>
+                        <span class="break-all">Email: <strong class="text-slate-700">sarlyoctavianikartasasmita@gmail.com</strong></span>
+                    </li>
+                    <li class="pt-2">
+                        <button onclick="openAdminLogin()" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-tokped-50 text-slate-700 hover:text-tokped-700 px-3 py-2 rounded-lg border border-slate-200 transition">
+                            <i data-lucide="lock" class="w-3.5 h-3.5"></i> Masuk Panel Admin Toko
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
+            &copy; 2026 Aneka Bumbu Cimahi (www.anekabumbucimahi.github.io). Hak Cipta Dilindungi.
+        </div>
+    </footer>
+
+    <!-- ===================================================================== -->
+    <!-- CART DRAWER (SLIDE OVER)                                              -->
+    <!-- ===================================================================== -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div onclick="toggleCart(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"></div>
+        
+        <!-- Drawer Panel -->
+        <div class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col z-10">
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-white">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 text-tokped-600"></i>
+                    <h3 class="font-bold text-lg text-slate-800">Keranjang Belanja</h3>
+                </div>
+                <button onclick="toggleCart(false)" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items Container -->
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Rendered via JS -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div id="cartFooter" class="p-5 border-t border-slate-200 bg-slate-50">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-slate-600">Total Belanja</span>
+                    <span id="cartTotalPrice" class="text-xl font-extrabold text-tokped-600">Rp 0</span>
+                </div>
+                <button onclick="openCheckoutModal()" class="w-full py-3 px-4 bg-tokped-500 hover:bg-tokped-600 text-white font-bold rounded-xl shadow-md shadow-tokped-500/20 transition flex items-center justify-center gap-2">
+                    <span>Lanjut ke Pembayaran QRIS</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- CHECKOUT & QRIS PAYMENT MODAL                                         -->
+    <!-- ===================================================================== -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onclick="closeCheckoutModal()"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl max-w-3xl w-full shadow-2xl border border-slate-200 overflow-hidden my-8">
+                
+                <!-- Modal Header -->
+                <div class="px-6 py-4 bg-tokped-600 text-white flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="qr-code" class="w-6 h-6"></i>
+                        <div>
+                            <h3 class="font-bold text-lg leading-tight">Checkout & Pembayaran QRIS</h3>
+                            <p class="text-xs text-tokped-100">Lengkapi data pengiriman & unggah bukti transfer</p>
+                        </div>
+                    </div>
+                    <button onclick="closeCheckoutModal()" class="p-1.5 rounded-lg hover:bg-white/20 text-white transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Checkout Form Body -->
+                <form id="checkoutForm" onsubmit="submitOrder(event)" class="p-6 max-h-[82vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        
+                        <!-- Left Column: Buyer Details -->
+                        <div class="md:col-span-7 space-y-4">
+                            <h4 class="font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-tokped-100 text-tokped-700 text-xs flex items-center justify-center font-bold">1</span>
+                                Data Penerima & Pengiriman
+                            </h4>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Penerima <span class="text-red-500">*</span></label>
+                                <input type="text" id="buyerName" required placeholder="Contoh: Ibu Rina Suryani"
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-tokped-500 focus:ring-2 focus:ring-tokped-500/20">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nomor WhatsApp Aktif <span class="text-red-500">*</span></label>
+                                    <input type="tel" id="buyerWa" required placeholder="0812xxxxxxxx"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-tokped-500 focus:ring-2 focus:ring-tokped-500/20">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 mb-1">Email Pembeli (Untuk Struk) <span class="text-red-500">*</span></label>
+                                    <input type="email" id="buyerEmail" required placeholder="email@contoh.com"
+                                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-tokped-500 focus:ring-2 focus:ring-tokped-500/20">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap Pengiriman <span class="text-red-500">*</span></label>
+                                <textarea id="buyerAddress" rows="3" required placeholder="Nama Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan, Kota Cimahi / Sekitarnya..."
+                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-tokped-500 focus:ring-2 focus:ring-tokped-500/20"></textarea>
+                            </div>
+
+                            <!-- Ringkasan Pesanan Singkat -->
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="text-xs font-bold text-slate-700 mb-2 flex justify-between">
+                                    <span>Ringkasan Belanja</span>
+                                    <span id="checkoutItemCount">0 Item</span>
+                                </div>
+                                <div id="checkoutSummaryList" class="space-y-1.5 text-xs text-slate-600 max-h-28 overflow-y-auto pr-1">
+                                    <!-- Injected -->
+                                </div>
+                                <div class="border-t border-slate-200 mt-2.5 pt-2 flex justify-between items-center font-bold text-sm">
+                                    <span>Total Bayar</span>
+                                    <span id="checkoutTotalDisplay" class="text-tokped-600 text-base">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: QRIS & Proof Upload -->
+                        <div class="md:col-span-5 space-y-4">
+                            <h4 class="font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-tokped-100 text-tokped-700 text-xs flex items-center justify-center font-bold">2</span>
+                                Scan QRIS & Bukti Bayar
+                            </h4>
+
+                            <!-- QRIS Card -->
+                            <div class="bg-gradient-to-b from-slate-50 to-white border-2 border-tokped-500/30 rounded-2xl p-4 text-center shadow-xs">
+                                <div class="flex items-center justify-center gap-1.5 mb-1">
+                                    <span class="font-extrabold text-sm tracking-wider text-slate-800">QRIS</span>
+                                    <span class="text-[10px] bg-tokped-100 text-tokped-700 font-bold px-2 py-0.5 rounded-full">E-Wallet & M-Banking</span>
+                                </div>
+                                <p class="text-[11px] text-slate-500 mb-2">Aneka Bumbu Cimahi</p>
+                                
+                                <!-- QRIS Image Container -->
+                                <div id="qrisDisplayContainer" class="w-44 h-44 mx-auto bg-white p-2 rounded-xl border border-slate-200 flex items-center justify-center overflow-hidden shadow-inner">
+                                    <!-- Default SVG QRIS or Custom Uploaded QRIS -->
+                                </div>
+                                
+                                <p class="text-[11px] text-slate-500 mt-2">
+                                    Scan menggunakan GoPay, OVO, DANA, ShopeePay, LinkAja, atau Mobile Banking.
+                                </p>
+                            </div>
+
+                            <!-- Upload Bukti Bayar -->
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                    Upload Screenshot Bukti Bayar <span class="text-red-500">*</span>
+                                </label>
+                                <label for="paymentProofInput" class="flex flex-col items-center justify-center w-full p-3 border-2 border-dashed border-slate-300 hover:border-tokped-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-tokped-50/40 transition">
+                                    <div id="proofUploadPlaceholder" class="text-center py-2">
+                                        <i data-lucide="upload-cloud" class="w-7 h-7 text-tokped-500 mx-auto mb-1"></i>
+                                        <p class="text-xs font-semibold text-slate-700">Klik untuk pilih gambar bukti transfer</p>
+                                        <p class="text-[10px] text-slate-400">JPG, PNG, WEBP (Wajib diisi)</p>
+                                    </div>
+                                    <div id="proofPreviewWrapper" class="hidden w-full text-center">
+                                        <img id="proofPreviewImg" src="" alt="Preview Bukti Bayar" class="max-h-32 mx-auto rounded-lg shadow-sm border border-slate-200 mb-1.5 object-contain">
+                                        <span class="inline-flex items-center gap-1 text-[11px] text-tokped-600 font-semibold">
+                                            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Bukti terlampir (Klik untuk ganti)
+                                        </span>
+                                    </div>
+                                    <input type="file" id="paymentProofInput" accept="image/*" required onchange="handleProofUpload(event)" class="hidden">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-6 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <p class="text-[11px] text-slate-500">
+                            Pesanan akan diteruskan ke Admin (WA: <strong>085624383827</strong> & Email) beserta konfirmasi ke email Anda.
+                        </p>
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-tokped-500 hover:bg-tokped-600 text-white font-bold rounded-xl shadow-lg shadow-tokped-500/25 transition flex items-center justify-center gap-2 shrink-0">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span>Kirim Bukti & Konfirmasi Pesanan</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ORDER CONFIRMATION & INVOICE MODAL (AFTER SUBMIT)                     -->
+    <!-- ===================================================================== -->
+    <div id="invoiceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden my-8">
+                
+                <!-- Success Banner -->
+                <div class="bg-gradient-to-r from-tokped-600 to-emerald-500 p-6 text-center text-white">
+                    <div class="w-14 h-14 bg-white text-tokped-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
+                        <i data-lucide="check" class="w-8 h-8 stroke-[3]"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold">Pesanan Berhasil Dikonfirmasi!</h3>
+                    <p class="text-xs text-tokped-50 mt-1">
+                        Konfirmasi pesanan telah dibuat dan dikirim ke email <strong id="invCustomerEmailBadge"></strong>
+                    </p>
+                </div>
+
+                <!-- Digital Receipt Body -->
+                <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <div>
+                            <span class="text-slate-500 block">ID Pesanan</span>
+                            <strong id="invOrderId" class="text-sm text-slate-800 font-mono">ABC-000000</strong>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-slate-500 block">Waktu Transaksi</span>
+                            <strong id="invOrderDate" class="text-slate-700">-</strong>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="text-xs space-y-1.5 border-b border-slate-100 pb-3">
+                        <div class="flex justify-between"><span class="text-slate-500">Penerima:</span> <strong id="invName" class="text-slate-800"></strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">WhatsApp:</span> <strong id="invWa" class="text-slate-800"></strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Email:</span> <strong id="invEmail" class="text-slate-800"></strong></div>
+                        <div>
+                            <span class="text-slate-500 block">Alamat Pengiriman:</span>
+                            <p id="invAddress" class="font-medium text-slate-800 mt-0.5"></p>
+                        </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 mb-2">Rincian Pembelian:</h5>
+                        <div id="invItemsList" class="space-y-1.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100"></div>
+                        <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-200">
+                            <span class="font-bold text-sm text-slate-700">Total Pembayaran (QRIS)</span>
+                            <span id="invTotal" class="font-extrabold text-lg text-tokped-600">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Proof Thumbnail -->
+                    <div class="flex items-center gap-3 bg-tokped-50/70 border border-tokped-200 p-2.5 rounded-xl">
+                        <img id="invProofThumb" src="" alt="Bukti" class="w-12 h-12 rounded-lg object-cover border border-slate-200 bg-white">
+                        <div class="text-xs">
+                            <p class="font-bold text-tokped-800">Bukti Pembayaran Terlampir</p>
+                            <p class="text-[11px] text-tokped-700">Silakan klik tombol di bawah untuk meneruskan bukti & struk langsung ke WhatsApp / Email Admin.</p>
+                        </div>
+                    </div>
+
+                    <!-- Direct Forward Buttons to Admin -->
+                    <div class="space-y-2.5 pt-2">
+                        <a id="btnForwardWaAdmin" href="#" target="_blank" class="w-full py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            <span>Teruskan Pesanan & Bukti ke WA Admin</span>
+                        </a>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a id="btnForwardEmailAdmin" href="#" class="py-2.5 px-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl transition flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                                <span>Kirim ke Email Admin</span>
+                            </a>
+                            <a id="btnCopyReceiptToBuyer" href="#" class="py-2.5 px-3 bg-tokped-100 hover:bg-tokped-200 text-tokped-800 font-semibold rounded-xl transition flex items-center justify-center gap-1.5 text-xs">
+                                <i data-lucide="mail-check" class="w-4 h-4"></i>
+                                <span>Salinan Email Pembeli</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <button onclick="closeInvoiceModal()" class="w-full py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+                        Tutup & Kembali Belanja
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- ADMIN LOGIN & DASHBOARD MODAL                                         -->
+    <!-- ===================================================================== -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onclick="closeAdminModal()"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            
+            <!-- Login Screen -->
+            <div id="adminLoginBox" class="relative bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-tokped-100 text-tokped-600 flex items-center justify-center">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800">Login Admin Toko</h3>
+                    </div>
+                    <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">
+                    Masukkan PIN Admin untuk mengubah harga bumbu, mengatur stok, mengganti barcode QRIS, atau melihat pesanan masuk.
+                </p>
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 text-[11px] px-3 py-2 rounded-lg mb-4">
+                    <strong>Info Demo:</strong> Gunakan PIN default <code class="font-bold bg-amber-100 px-1.5 py-0.5 rounded">1234</code>
+                </div>
+                <form onsubmit="verifyAdminPin(event)" class="space-y-3">
+                    <input type="password" id="adminPinInput" maxlength="6" placeholder="Masukkan PIN (1234)" required
+                        class="w-full px-4 py-2.5 text-center tracking-widest font-bold text-lg rounded-xl border border-slate-300 focus:outline-none focus:border-tokped-500">
+                    <p id="adminPinError" class="hidden text-xs text-red-500 text-center font-medium">PIN salah! Silakan coba lagi.</p>
+                    <button type="submit" class="w-full py-2.5 bg-tokped-500 hover:bg-tokped-600 text-white font-bold rounded-xl transition">
+                        Masuk Dashboard Admin
+                    </button>
+                </form>
+            </div>
+
+            <!-- Admin Dashboard Panel -->
+            <div id="adminDashboardBox" class="hidden relative bg-white rounded-2xl max-w-5xl w-full shadow-2xl border border-slate-200 overflow-hidden my-6">
+                <!-- Header -->
+                <div class="px-6 py-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-tokped-500 flex items-center justify-center">
+                            <i data-lucide="sliders" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base">Dashboard Admin - Aneka Bumbu Cimahi</h3>
+                            <p class="text-xs text-slate-400">Kelola harga kiloan, varian gramasi, QRIS, & riwayat pesanan</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="resetDefaultData()" class="px-3 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-semibold transition">
+                            Reset Harga Default
+                        </button>
+                        <button onclick="closeAdminModal()" class="p-1.5 rounded-lg hover:bg-white/10 text-slate-300">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Navigation Tabs -->
+                <div class="bg-slate-100 px-6 border-b border-slate-200 flex gap-4 overflow-x-auto">
+                    <button onclick="switchAdminTab('prices')" id="tabBtn-prices" class="admin-tab-btn py-3 text-xs font-bold border-b-2 border-tokped-500 text-tokped-600 whitespace-nowrap">
+                        1. Update Harga & Stok Bumbu
+                    </button>
+                    <button onclick="switchAdminTab('qris')" id="tabBtn-qris" class="admin-tab-btn py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">
+                        2. Pengaturan Barcode QRIS
+                    </button>
+                    <button onclick="switchAdminTab('orders')" id="tabBtn-orders" class="admin-tab-btn py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap">
+                        3. Riwayat Pesanan Masuk (<span id="adminOrderCount">0</span>)
+                    </button>
+                </div>
+
+                <!-- Tab 1: Price & Stock Editor -->
+                <div id="adminTab-prices" class="p-6 max-h-[72vh] overflow-y-auto space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 bg-tokped-50 border border-tokped-200 p-3.5 rounded-xl">
+                        <p class="text-xs text-tokped-800">
+                            Ubah angka harga di bawah ini, lalu klik <strong>"Simpan Semua Perubahan Harga"</strong> agar langsung tampil di halaman pembeli.
+                        </p>
+                        <button onclick="saveAdminPrices()" class="px-4 py-2 bg-tokped-500 hover:bg-tokped-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
+                            <i data-lucide="save" class="w-4 h-4"></i> Simpan Semua Perubahan Harga
+                        </button>
+                    </div>
+
+                    <div id="adminProductList" class="space-y-4">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Tab 2: QRIS Settings -->
+                <div id="adminTab-qris" class="hidden p-6 max-h-[72vh] overflow-y-auto">
+                    <div class="max-w-md mx-auto text-center space-y-4">
+                        <h4 class="font-bold text-slate-800">Gambar Barcode QRIS Toko</h4>
+                        <p class="text-xs text-slate-500">
+                            Unggah gambar QRIS asli milik toko Anda (dari GoPay Merchant, DANA Bisnis, BCA, BRI, dll). Gambar ini akan muncul saat pembeli melakukan checkout.
+                        </p>
+                        <div id="adminQrisPreview" class="w-56 h-56 mx-auto bg-white p-3 rounded-2xl border-2 border-slate-200 flex items-center justify-center shadow-sm">
+                            <!-- Current QRIS -->
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="cursor-pointer py-2.5 px-4 bg-tokped-500 hover:bg-tokped-600 text-white text-xs font-bold rounded-xl shadow transition inline-flex items-center justify-center gap-2">
+                                <i data-lucide="image-plus" class="w-4 h-4"></i> Upload Gambar QRIS Baru
+                                <input type="file" accept="image/*" onchange="uploadNewQris(event)" class="hidden">
+                            </label>
+                            <button onclick="resetDefaultQris()" class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold rounded-xl transition">
+                                Gunakan QRIS Bawaan Sistem
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Orders History -->
+                <div id="adminTab-orders" class="hidden p-6 max-h-[72vh] overflow-y-auto">
+                    <div id="adminOrdersList" class="space-y-3">
+                        <!-- Orders rendered via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT LOGIC                                                      -->
+    <!-- ===================================================================== -->
+    <script>
+        // =====================================================================
+        // 1. CUSTOM SVG ILLUSTRATIONS FOR ALL 15 SPICES (CRISP & CONSISTENT)
+        // =====================================================================
+        function getSpiceIllustration(id) {
+            const illustrations = {
+                'bawang-merah': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fdf2f8"/><circle cx="100" cy="85" r="45" fill="#fce7f3"/><g transform="translate(55,35)"><path d="M45 10 C45 10 22 32 22 55 C22 72 34 82 48 82 C62 82 74 72 74 55 C74 32 51 10 51 10 Z" fill="#be185d"/><path d="M48 12 C48 12 32 34 32 55 C32 70 40 80 48 80 C56 80 64 70 64 55 C64 34 48 12 48 12 Z" fill="#db2777"/><path d="M48 4 L45 13 L51 13 Z" fill="#831843"/><path d="M22 42 C10 50 8 68 18 78 C26 85 38 82 42 74 C32 68 26 55 22 42 Z" fill="#9d174d"/><path d="M74 44 C84 52 86 68 76 77 C68 84 58 80 54 73 C64 67 70 55 74 44 Z" fill="#ec4899"/></g></svg>`,
+                
+                'bawang-putih': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#f8fafc"/><circle cx="100" cy="85" r="46" fill="#f1f5f9"/><g transform="translate(52,32)"><path d="M48 8 L44 24 C24 30 16 48 20 66 C24 80 36 86 48 86 C60 86 72 80 76 66 C80 48 72 30 52 24 Z" fill="#e2e8f0"/><path d="M48 10 C36 28 32 48 34 68 C36 80 42 86 48 86 C54 86 60 80 62 68 C64 48 60 28 48 10 Z" fill="#ffffff"/><path d="M35 28 C24 38 22 56 26 70 C28 78 33 83 38 84 C34 70 34 48 35 28 Z" fill="#f8fafc"/><path d="M61 28 C72 38 74 56 70 70 C68 78 63 83 58 84 C62 70 62 48 61 28 Z" fill="#cbd5e1" opacity="0.45"/><path d="M42 85 Q48 92 54 85" stroke="#94a3b8" stroke-width="2.5" fill="none"/></g></svg>`,
+                
+                'bawang-bombay': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fffbeb"/><circle cx="100" cy="85" r="46" fill="#fef3c7"/><g transform="translate(52,30)"><path d="M48 10 L42 22 C20 30 14 52 20 70 C26 84 38 88 48 88 C58 88 70 84 76 70 C82 52 76 30 54 22 Z" fill="#d97706"/><path d="M48 14 C32 28 26 50 30 70 C33 82 40 87 48 87 C56 87 63 82 66 70 C70 50 64 28 48 14 Z" fill="#f59e0b"/><path d="M48 16 C40 34 38 54 41 74 C43 82 46 86 48 86 C50 86 53 82 55 74 C58 54 56 34 48 16 Z" fill="#fbbf24"/><path d="M44 8 L48 18 L52 8" stroke="#92400e" stroke-width="3" fill="none"/></g></svg>`,
+                
+                'gula-aren': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fef3c7"/><circle cx="100" cy="85" r="48" fill="#fde68a"/><g transform="translate(45,42)"><ellipse cx="55" cy="56" rx="44" ry="18" fill="#78350f"/><path d="M11 36 L11 56 C11 66 31 74 55 74 C79 74 99 66 99 56 L99 36 Z" fill="#92400e"/><ellipse cx="55" cy="36" rx="44" ry="18" fill="#b45309"/><ellipse cx="55" cy="35" rx="36" ry="13" fill="#d97706" opacity="0.5"/><ellipse cx="32" cy="22" rx="24" ry="10" fill="#78350f"/><path d="M8 12 L8 22 C8 28 19 32 32 32 C45 32 56 28 56 22 L56 12 Z" fill="#92400e"/><ellipse cx="32" cy="12" rx="24" ry="10" fill="#b45309"/></g></svg>`,
+                
+                'kemiri': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fefce8"/><circle cx="100" cy="82" r="46" fill="#fef9c3"/><g transform="translate(48,42)"><circle cx="36" cy="48" r="24" fill="#eab308" opacity="0.25"/><path d="M36 24 C20 24 14 38 16 52 C18 66 30 72 42 70 C54 68 60 54 56 40 C52 28 44 24 36 24 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/><path d="M68 28 C54 28 48 40 50 54 C52 66 62 72 74 70 C86 68 90 54 86 42 C82 32 76 28 68 28 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2"/><path d="M26 42 Q36 48 44 40" stroke="#ca8a04" stroke-width="1.5" fill="none" opacity="0.6"/></g></svg>`,
+                
+                'kapulaga': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#f0fdf4"/><circle cx="100" cy="82" r="46" fill="#dcfce7"/><g transform="translate(48,38)"><g transform="rotate(-25 40 45)"><ellipse cx="40" cy="45" rx="16" ry="28" fill="#84cc16" stroke="#4d7c0f" stroke-width="2"/><path d="M40 17 L40 73 M31 22 Q28 45 31 68 M49 22 Q52 45 49 68" stroke="#4d7c0f" stroke-width="1.5" fill="none"/></g><g transform="rotate(30 68 48)"><ellipse cx="68" cy="48" rx="15" ry="26" fill="#a3e635" stroke="#4d7c0f" stroke-width="2"/><path d="M68 22 L68 74 M60 27 Q57 48 60 69 M76 27 Q79 48 76 69" stroke="#4d7c0f" stroke-width="1.5" fill="none"/></g></g></svg>`,
+                
+                'kayu-manis': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fff7ed"/><circle cx="100" cy="82" r="46" fill="#ffedd5"/><g transform="translate(44,35)"><g transform="rotate(-35 50 45)"><rect x="20" y="34" width="76" height="18" rx="8" fill="#9a3412"/><rect x="20" y="34" width="76" height="9" rx="4" fill="#c2410c"/><circle cx="24" cy="43" r="7" fill="#7c2d12" stroke="#fdba74" stroke-width="2"/></g><g transform="rotate(20 56 56)"><rect x="18" y="46" width="74" height="18" rx="8" fill="#7c2d12"/><rect x="18" y="46" width="74" height="9" rx="4" fill="#9a3412"/><circle cx="88" cy="55" r="7" fill="#431407" stroke="#fdba74" stroke-width="2"/></g></g></svg>`,
+                
+                'lada-putih': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fafaf9"/><circle cx="100" cy="82" r="46" fill="#f5f5f4"/><g transform="translate(52,40)"><circle cx="32" cy="36" r="14" fill="#e7e5e4" stroke="#a8a29e" stroke-width="2"/><circle cx="28" cy="32" r="4" fill="#ffffff"/><circle cx="62" cy="32" r="13" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/><circle cx="58" cy="28" r="3.5" fill="#ffffff"/><circle cx="48" cy="58" r="15" fill="#f5f5f4" stroke="#a8a29e" stroke-width="2"/><circle cx="43" cy="53" r="4" fill="#ffffff"/><circle cx="72" cy="56" r="11" fill="#e7e5e4" stroke="#a8a29e" stroke-width="1.5"/><circle cx="22" cy="60" r="10" fill="#d6d3d1" stroke="#a8a29e" stroke-width="1.5"/></g></svg>`,
+                
+                'lada-hitam': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#f1f5f9"/><circle cx="100" cy="82" r="46" fill="#e2e8f0"/><g transform="translate(52,40)"><circle cx="32" cy="36" r="14" fill="#334155" stroke="#0f172a" stroke-width="2"/><circle cx="28" cy="31" r="3.5" fill="#64748b"/><circle cx="62" cy="32" r="13" fill="#1e293b" stroke="#0f172a" stroke-width="2"/><circle cx="58" cy="28" r="3" fill="#475569"/><circle cx="48" cy="58" r="15" fill="#0f172a" stroke="#020617" stroke-width="2"/><circle cx="43" cy="53" r="3.5" fill="#475569"/><circle cx="72" cy="56" r="11" fill="#334155"/><circle cx="22" cy="60" r="10" fill="#1e293b"/></g></svg>`,
+                
+                'bunga-lawang': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fff7ed"/><circle cx="100" cy="80" r="48" fill="#ffedd5"/><g transform="translate(100,80)"><g fill="#9a3412" stroke="#7c2d12" stroke-width="1.5"><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(45)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(90)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(135)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(180)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(225)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(270)"/><path d="M0 -8 L-8 -38 C-4 -44 4 -44 8 -38 Z" transform="rotate(315)"/></g><circle cx="0" cy="0" r="10" fill="#7c2d12"/><circle cx="0" cy="-24" r="3.5" fill="#f59e0b"/><circle cx="17" cy="-17" r="3.5" fill="#f59e0b"/><circle cx="24" cy="0" r="3.5" fill="#f59e0b"/><circle cx="17" cy="17" r="3.5" fill="#f59e0b"/><circle cx="0" cy="24" r="3.5" fill="#f59e0b"/><circle cx="-17" cy="17" r="3.5" fill="#f59e0b"/><circle cx="-24" cy="0" r="3.5" fill="#f59e0b"/><circle cx="-17" cy="-17" r="3.5" fill="#f59e0b"/></g></svg>`,
+                
+                'bawang-putih-tunggal': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#f8fafc"/><circle cx="100" cy="82" r="46" fill="#f1f5f9"/><g transform="translate(55,34)"><path d="M45 8 L41 22 C24 28 18 46 22 64 C26 78 36 84 45 84 C54 84 64 78 68 64 C72 46 66 28 49 22 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/><path d="M45 14 C35 30 33 50 36 72" stroke="#e2e8f0" stroke-width="2" fill="none"/><path d="M45 14 C55 30 57 50 54 72" stroke="#e2e8f0" stroke-width="2" fill="none"/><ellipse cx="45" cy="84" rx="8" ry="3" fill="#94a3b8"/></g></svg>`,
+                
+                'cengkeh': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fef2f2"/><circle cx="100" cy="82" r="46" fill="#fee2e2"/><g transform="translate(54,34)"><g transform="rotate(-25 35 45)"><rect x="31" y="34" width="8" height="46" rx="3" fill="#7f1d1d"/><circle cx="35" cy="30" r="9" fill="#991b1b"/><path d="M26 30 L23 23 L31 27 Z M44 30 L47 23 L39 27 Z" fill="#7f1d1d"/></g><g transform="rotate(28 65 48)"><rect x="61" y="36" width="8" height="44" rx="3" fill="#450a0a"/><circle cx="65" cy="32" r="8.5" fill="#7f1d1d"/><path d="M57 32 L54 25 L61 29 Z M73 32 L76 25 L69 29 Z" fill="#450a0a"/></g></g></svg>`,
+                
+                'ketumbar': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fefce8"/><circle cx="100" cy="82" r="46" fill="#fef9c3"/><g transform="translate(50,38)" fill="#d97706" stroke="#92400e" stroke-width="1.5"><circle cx="30" cy="34" r="10"/><circle cx="52" cy="28" r="9"/><circle cx="72" cy="38" r="10"/><circle cx="24" cy="56" r="9.5"/><circle cx="46" cy="52" r="11"/><circle cx="68" cy="60" r="9.5"/><circle cx="48" cy="74" r="8.5"/></g></svg>`,
+                
+                'pala-biji': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#fffbeb"/><circle cx="100" cy="82" r="46" fill="#fef3c7"/><g transform="translate(52,36)"><ellipse cx="42" cy="48" rx="24" ry="30" transform="rotate(-15 42 48)" fill="#78350f"/><path d="M28 32 Q42 44 54 34 M24 48 Q42 58 58 48 M30 64 Q44 70 54 62" stroke="#b45309" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="70" cy="56" rx="16" ry="21" transform="rotate(25 70 56)" fill="#92400e"/></g></svg>`,
+                
+                'asam-kandis': `<svg viewBox="0 0 200 160" class="w-full h-full"><rect width="200" height="160" fill="#f5f3ff"/><circle cx="100" cy="82" r="46" fill="#ede9fe"/><g transform="translate(48,38)"><circle cx="44" cy="46" r="28" fill="#3b0764"/><circle cx="44" cy="46" r="10" fill="#f5f3ff"/><path d="M44 18 L44 36 M44 56 L44 74 M16 46 L34 46 M54 46 L72 46 M24 26 L37 39 M51 53 L64 66 M64 26 L51 39 M37 53 L24 66" stroke="#581c87" stroke-width="2"/><circle cx="74" cy="54" r="20" fill="#581c87"/><circle cx="74" cy="54" r="7" fill="#f5f3ff"/></g></svg>`
+            };
+            return illustrations[id] || illustrations['ketumbar'];
+        }
+
+        // =====================================================================
+        // 2. DEFAULT DATA & STATE MANAGEMENT (LOCALSTORAGE)
+        // =====================================================================
+        const DEFAULT_PRODUCTS = [
+            // Kategori: Satuan Harga / Kg
+            { id: 'bawang-merah', name: 'Bawang Merah', category: 'kg', unit: 'kg', pricePerKg: 38000, inStock: true, desc: 'Bawang merah segar pilihan, aroma harum & tidak mudah busuk.' },
+            { id: 'bawang-putih', name: 'Bawang Putih', category: 'kg', unit: 'kg', pricePerKg: 42000, inStock: true, desc: 'Bawang putih kating berkualitas tinggi, siung besar & gurih.' },
+            { id: 'bawang-bombay', name: 'Bawang Bombay', category: 'kg', unit: 'kg', pricePerKg: 32000, inStock: true, desc: 'Bawang bombay segar ukuran besar, cocok untuk tumisan & saus.' },
+            { id: 'gula-aren', name: 'Gula Aren Asli', category: 'kg', unit: 'kg', pricePerKg: 28000, inStock: true, desc: 'Gula aren cetak murni legit, cocok untuk masakan, kue & minuman.' },
+
+            // Kategori: Satuan Harga / Pcs (Varian Gramasi: 15gr, 20gr, 25gr, 40gr, 50gr)
+            { id: 'kemiri', name: 'Kemiri Bulat', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Kemiri utuh pilihan, pengental & penggurih bumbu masakan Nusantara.', variants: { '15gr': 2500, '20gr': 3000, '25gr': 3500, '40gr': 5500, '50gr': 6500 } },
+            { id: 'kapulaga', name: 'Kapulaga Putih', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Kapulaga kering aromatik untuk gulai, opor, rendang & wedang.', variants: { '15gr': 4000, '20gr': 5000, '25gr': 6000, '40gr': 9000, '50gr': 11000 } },
+            { id: 'kayu-manis', name: 'Kayu Manis Batang', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Kulit kayu manis kering harum alami untuk masakan & minuman.', variants: { '15gr': 2500, '20gr': 3000, '25gr': 3800, '40gr': 5500, '50gr': 7000 } },
+            { id: 'lada-putih', name: 'Lada Putih Butir', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Merica/lada putih butiran murni pedas hangat tanpa campuran.', variants: { '15gr': 3500, '20gr': 4500, '25gr': 5500, '40gr': 8500, '50gr': 10000 } },
+            { id: 'lada-hitam', name: 'Lada Hitam Butir', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Lada hitam pilihan beraroma tajam & pedas khas hidangan panggang.', variants: { '15gr': 3500, '20gr': 4500, '25gr': 5500, '40gr': 8500, '50gr': 10000 } },
+            { id: 'bunga-lawang', name: 'Bunga Lawang (Pekak)', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Pekak/bunga lawang utuh wangi khas untuk semur, sop & kaldu.', variants: { '15gr': 3500, '20gr': 4500, '25gr': 5500, '40gr': 8000, '50gr': 9500 } },
+            { id: 'bawang-putih-tunggal', name: 'Bawang Putih Tunggal', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Bawang lanang tunggal pilihan, berkhasiat tinggi & aroma kuat.', variants: { '15gr': 3000, '20gr': 4000, '25gr': 5000, '40gr': 7500, '50gr': 9000 } },
+            { id: 'cengkeh', name: 'Cengkeh Kering', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Cengkeh kering kualitas super, harum semerbak untuk masakan & kue.', variants: { '15gr': 3500, '20gr': 4500, '25gr': 5500, '40gr': 8500, '50gr': 10000 } },
+            { id: 'ketumbar', name: 'Ketumbar Biji', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Ketumbar butiran bersih & wangi, wajib ada di setiap dapur.', variants: { '15gr': 2000, '20gr': 2500, '25gr': 3000, '40gr': 4500, '50gr': 5500 } },
+            { id: 'pala-biji', name: 'Pala Biji Utuh', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Biji pala kering pilihan untuk semur, sop buntut, rendang & kue.', variants: { '15gr': 3500, '20gr': 4500, '25gr': 5500, '40gr': 8500, '50gr': 10000 } },
+            { id: 'asam-kandis', name: 'Asam Kandis', category: 'pcs', unit: 'pcs', inStock: true, desc: 'Asam kandis kering pemberi rasa asam segar khas masakan Padang/Sumatera.', variants: { '15gr': 2500, '20gr': 3000, '25gr': 3800, '40gr': 5500, '50gr': 6500 } }
+        ];
+
+        const GRAM_OPTIONS = ['15gr', '20gr', '25gr', '40gr', '50gr'];
+        const ADMIN_WA = '6285624383827';
+        const ADMIN_EMAIL = 'sarlyoctavianikartasasmita@gmail.com';
+        const ADMIN_PIN = '1234';
+
+        // App State
+        let products = JSON.parse(localStorage.getItem('abc_products')) || JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+        let cart = JSON.parse(localStorage.getItem('abc_cart')) || [];
+        let orders = JSON.parse(localStorage.getItem('abc_orders')) || [];
+        let customQris = localStorage.getItem('abc_qris') || null;
+
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let selectedVariants = {}; // { productId: '15gr' }
+        let selectedKgQty = {};    // { productId: 1 }
+        let currentProofBase64 = '';
+
+        // Initialize defaults for product cards
+        products.forEach(p => {
+            if (p.category === 'pcs') selectedVariants[p.id] = '15gr';
+            if (p.category === 'kg') selectedKgQty[p.id] = 1;
+        });
+
+        // =====================================================================
+        // 3. HELPER FUNCTIONS
+        // =====================================================================
+        function formatRupiah(num) {
+            return 'Rp ' + Number(num).toLocaleString('id-ID');
+        }
+
+        function saveState() {
+            localStorage.setItem('abc_products', JSON.stringify(products));
+            localStorage.setItem('abc_cart', JSON.stringify(cart));
+            localStorage.setItem('abc_orders', JSON.stringify(orders));
+            updateCartBadge();
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-slate-900 text-white' : 'bg-red-600 text-white';
+            const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+            
+            toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-lg flex items-center gap-2.5 text-xs font-semibold transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 text-tokped-500 shrink-0"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Default Realistic SVG QRIS Generator
+        function getDefaultQrisSvg() {
+            return `
+            <svg viewBox="0 0 180 180" class="w-full h-full">
+                <rect width="180" height="180" fill="#ffffff"/>
+                <!-- Corner Squares -->
+                <rect x="14" y="14" width="42" height="42" fill="none" stroke="#0f172a" stroke-width="6"/>
+                <rect x="24" y="24" width="22" height="22" fill="#0f172a"/>
+                
+                <rect x="124" y="14" width="42" height="42" fill="none" stroke="#0f172a" stroke-width="6"/>
+                <rect x="134" y="24" width="22" height="22" fill="#0f172a"/>
+                
+                <rect x="14" y="124" width="42" height="42" fill="none" stroke="#0f172a" stroke-width="6"/>
+                <rect x="24" y="134" width="22" height="22" fill="#0f172a"/>
+
+                <!-- QR Pattern Blocks -->
+                <g fill="#0f172a">
+                    <rect x="68" y="14" width="8" height="8"/><rect x="84" y="14" width="16" height="8"/><rect x="108" y="14" width="8" height="16"/>
+                    <rect x="68" y="30" width="16" height="8"/><rect x="92" y="30" width="8" height="16"/>
+                    <rect x="68" y="46" width="8" height="16"/><rect x="84" y="54" width="24" height="8"/>
+                    <rect x="14" y="68" width="16" height="8"/><rect x="38" y="68" width="8" height="16"/><rect x="54" y="68" width="16" height="8"/>
+                    <rect x="14" y="84" width="8" height="24"/><rect x="30" y="92" width="24" height="8"/><rect x="62" y="92" width="8" height="16"/>
+                    <rect x="116" y="68" width="16" height="8"/><rect x="140" y="68" width="26" height="8"/>
+                    <rect x="124" y="84" width="8" height="24"/><rect x="140" y="92" width="16" height="8"/><rect x="160" y="84" width="6" height="24"/>
+                    <rect x="68" y="116" width="16" height="8"/><rect x="92" y="116" width="8" height="24"/><rect x="108" y="124" width="16" height="8"/>
+                    <rect x="68" y="132" width="8" height="16"/><rect x="84" y="148" width="24" height="8"/><rect x="116" y="140" width="16" height="16"/>
+                    <rect x="140" y="124" width="26" height="8"/><rect x="140" y="140" width="8" height="26"/><rect x="156" y="148" width="10" height="18"/>
+                </g>
+                <!-- Center QRIS Badge -->
+                <rect x="68" y="68" width="44" height="44" rx="6" fill="#ffffff" stroke="#03ac0e" stroke-width="2"/>
+                <text x="90" y="88" font-family="Inter, sans-serif" font-size="11" font-weight="800" fill="#03ac0e" text-anchor="middle">QRIS</text>
+                <text x="90" y="100" font-family="Inter, sans-serif" font-size="6.5" font-weight="700" fill="#334155" text-anchor="middle">CIMAHI</text>
+            </svg>`;
+        }
+
+        function renderQrisInto(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            if (customQris) {
+                el.innerHTML = `<img src="${customQris}" alt="Barcode QRIS Toko" class="w-full h-full object-contain">`;
+            } else {
+                el.innerHTML = getDefaultQrisSvg();
+            }
+        }
+
+        // =====================================================================
+        // 4. CATALOG RENDERING & INTERACTIONS
+        // =====================================================================
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            const filtered = products.filter(p => {
+                const matchCat = currentCategory === 'all' || p.category === currentCategory;
+                const matchSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                    p.desc.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(product => {
+                const isKg = product.category === 'kg';
+                const currentVar = selectedVariants[product.id] || '15gr';
+                const currentKg = selectedKgQty[product.id] || 1;
+                
+                const displayPrice = isKg 
+                    ? product.pricePerKg 
+                    : (product.variants[currentVar] || 0);
+
+                const unitLabel = isKg ? '/ kg' : `/ pcs (${currentVar})`;
+
+                return `
+                <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:border-tokped-500/40 transition-all duration-200 flex flex-col overflow-hidden group ${!product.inStock ? 'opacity-75' : ''}">
+                    <!-- Product Illustration -->
+                    <div class="relative h-40 w-full overflow-hidden border-b border-slate-100">
+                        <div class="w-full h-full transform group-hover:scale-105 transition-transform duration-300">
+                            ${getSpiceIllustration(product.id)}
+                        </div>
+                        <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-xs ${isKg ? 'bg-amber-100 text-amber-800' : 'bg-tokped-100 text-tokped-800'}">
+                            ${isKg ? 'Satuan Kg' : 'Kemasan Pcs'}
+                        </span>
+                        ${!product.inStock ? `
+                        <div class="absolute inset-0 bg-slate-900/50 flex items-center justify-center">
+                            <span class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">Stok Habis</span>
+                        </div>` : ''}
+                    </div>
+
+                    <!-- Product Body -->
+                    <div class="p-4 flex-1 flex flex-col">
+                        <h3 class="font-bold text-slate-800 text-base mb-1 group-hover:text-tokped-600 transition">${product.name}</h3>
+                        <p class="text-xs text-slate-500 line-clamp-2 mb-3 flex-1">${product.desc}</p>
+
+                        <!-- Price Display -->
+                        <div class="mb-3">
+                            <div class="flex items-baseline gap-1">
+                                <span id="price-${product.id}" class="text-lg font-extrabold text-tokped-600">${formatRupiah(displayPrice)}</span>
+                                <span id="unit-${product.id}" class="text-xs font-medium text-slate-500">${unitLabel}</span>
+                            </div>
+                        </div>
+
+                        <!-- Variant Selector (For Pcs) OR Kg Stepper (For Kg) -->
+                        ${isKg ? `
+                        <div class="mb-3">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Jumlah Berat (Kg):</label>
+                            <div class="flex items-center justify-between bg-slate-100 rounded-xl p-1 border border-slate-200">
+                                <button type="button" onclick="adjustCardKg('${product.id}', -0.5)" class="w-8 h-7 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-bold shadow-2xs flex items-center justify-center">-</button>
+                                <span id="kg-val-${product.id}" class="text-xs font-bold text-slate-800">${currentKg} kg (${formatRupiah(displayPrice * currentKg)})</span>
+                                <button type="button" onclick="adjustCardKg('${product.id}', 0.5)" class="w-8 h-7 rounded-lg bg-white hover:bg-slate-50 text-tokped-600 font-bold shadow-2xs flex items-center justify-center">+</button>
+                            </div>
+                        </div>
+                        ` : `
+                        <div class="mb-3">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1.5">Pilih Berat Kemasan:</label>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${GRAM_OPTIONS.map(gram => {
+                                    const active = currentVar === gram;
+                                    return `
+                                    <button type="button" onclick="selectCardVariant('${product.id}', '${gram}')"
+                                        class="px-2 py-1 rounded-lg text-[11px] font-semibold border transition ${active 
+                                            ? 'bg-tokped-500 text-white border-tokped-500 shadow-2xs' 
+                                            : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-tokped-400'}">
+                                        ${gram}
+                                    </button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        `}
+
+                        <!-- Add to Cart Button -->
+                        <button type="button" onclick="addToCart('${product.id}')" ${!product.inStock ? 'disabled' : ''}
+                            class="w-full py-2.5 px-3 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5 ${product.inStock 
+                                ? 'bg-tokped-500 hover:bg-tokped-600 text-white shadow-sm shadow-tokped-500/20 active:scale-[0.98]' 
+                                : 'bg-slate-200 text-slate-400 cursor-not-allowed'}">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>${product.inStock ? 'Tambah ke Keranjang' : 'Stok Kosong'}</span>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function selectCardVariant(productId, gram) {
+            selectedVariants[productId] = gram;
+            renderProducts();
+        }
+
+        function adjustCardKg(productId, delta) {
+            const current = selectedKgQty[productId] || 1;
+            const next = Math.max(0.5, Math.round((current + delta) * 10) / 10);
+            selectedKgQty[productId] = next;
+            renderProducts();
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-tokped-500', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            });
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            activeBtn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+            activeBtn.classList.add('bg-tokped-500', 'text-white', 'shadow-sm');
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            currentSearch = val.trim();
+            document.getElementById('clearSearchBtn').classList.toggle('hidden', currentSearch === '');
+            renderProducts();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch('');
+        }
+
+        function resetFilters() {
+            clearSearch();
+            setCategory('all');
+        }
+
+        // =====================================================================
+        // 5. CART MANAGEMENT
+        // =====================================================================
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || !product.inStock) return;
+
+            if (product.category === 'kg') {
+                const kgQty = selectedKgQty[productId] || 1;
+                const cartItemId = `${product.id}-kg`;
+                const existing = cart.find(item => item.cartItemId === cartItemId);
+
+                if (existing) {
+                    existing.qty = Math.round((existing.qty + kgQty) * 10) / 10;
+                } else {
+                    cart.push({
+                        cartItemId,
+                        productId: product.id,
+                        name: product.name,
+                        category: 'kg',
+                        variantLabel: 'Per Kg',
+                        unitPrice: product.pricePerKg,
+                        qty: kgQty
+                    });
+                }
+                showToast(`${product.name} (${kgQty} kg) masuk keranjang!`);
+            } else {
+                const gram = selectedVariants[productId] || '15gr';
+                const unitPrice = product.variants[gram];
+                const cartItemId = `${product.id}-${gram}`;
+                const existing = cart.find(item => item.cartItemId === cartItemId);
+
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    cart.push({
+                        cartItemId,
+                        productId: product.id,
+                        name: product.name,
+                        category: 'pcs',
+                        variantLabel: `Kemasan ${gram}`,
+                        unitPrice: unitPrice,
+                        qty: 1
+                    });
+                }
+                showToast(`${product.name} (${gram}) masuk keranjang!`);
+            }
+
+            saveState();
+            renderCart();
+        }
+
+        function updateCartQty(cartItemId, delta) {
+            const idx = cart.findIndex(i => i.cartItemId === cartItemId);
+            if (idx === -1) return;
+
+            const item = cart[idx];
+            const step = item.category === 'kg' ? 0.5 : 1;
+            const newQty = Math.round((item.qty + (delta * step)) * 10) / 10;
+
+            if (newQty <= 0) {
+                cart.splice(idx, 1);
+            } else {
+                item.qty = newQty;
+            }
+            saveState();
+            renderCart();
+        }
+
+        function removeCartItem(cartItemId) {
+            cart = cart.filter(i => i.cartItemId !== cartItemId);
+            saveState();
+            renderCart();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            badge.textContent = cart.length;
+        }
+
+        function getCartTotal() {
+            return cart.reduce((sum, item) => sum + Math.round(item.unitPrice * item.qty), 0);
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const footer = document.getElementById('cartFooter');
+            const totalDisplay = document.getElementById('cartTotalPrice');
+
+            if (cart.length === 0) {
+                footer.classList.add('hidden');
+                container.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-center py-12">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                        <i data-lucide="shopping-bag" class="w-8 h-8"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-700 mb-1">Keranjang masih kosong</h4>
+                    <p class="text-xs text-slate-500 max-w-xs mb-4">Yuk pilih bumbu dapur segar dan rempah pilihanmu sekarang!</p>
+                    <button onclick="toggleCart(false)" class="px-4 py-2 bg-tokped-500 text-white text-xs font-bold rounded-xl">
+                        Lihat Katalog Bumbu
+                    </button>
+                </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            footer.classList.remove('hidden');
+            totalDisplay.textContent = formatRupiah(getCartTotal());
+
+            container.innerHTML = cart.map(item => {
+                const subtotal = Math.round(item.unitPrice * item.qty);
+                const qtyUnit = item.category === 'kg' ? 'kg' : 'pcs';
+                return `
+                <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+                    <div class="w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-slate-100">
+                        ${getSpiceIllustration(item.productId)}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start gap-2">
+                            <h5 class="font-bold text-sm text-slate-800 truncate">${item.name}</h5>
+                            <button onclick="removeCartItem('${item.cartItemId}')" class="text-slate-400 hover:text-red-500 p-0.5">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-slate-500">${item.variantLabel} • ${formatRupiah(item.unitPrice)}/${qtyUnit}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="font-bold text-xs text-tokped-600">${formatRupiah(subtotal)}</span>
+                            <div class="flex items-center gap-2 bg-slate-100 rounded-lg px-1.5 py-0.5 border border-slate-200">
+                                <button onclick="updateCartQty('${item.cartItemId}', -1)" class="w-5 h-5 flex items-center justify-center font-bold text-slate-600 hover:text-slate-900">-</button>
+                                <span class="text-xs font-bold text-slate-800 min-w-[36px] text-center">${item.qty} ${qtyUnit}</span>
+                                <button onclick="updateCartQty('${item.cartItemId}', 1)" class="w-5 h-5 flex items-center justify-center font-bold text-tokped-600 hover:text-tokped-700">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function toggleCart(open) {
+            const drawer = document.getElementById('cartDrawer');
+            if (open) {
+                renderCart();
+                drawer.classList.remove('hidden');
+            } else {
+                drawer.classList.add('hidden');
+            }
+        }
+
+        // =====================================================================
+        // 6. CHECKOUT, QRIS PAYMENT & ORDER SUBMISSION
+        // =====================================================================
+        function openCheckoutModal() {
+            if (cart.length === 0) return;
+            toggleCart(false);
+
+            // Reset proof upload preview
+            currentProofBase64 = '';
+            document.getElementById('paymentProofInput').value = '';
+            document.getElementById('proofUploadPlaceholder').classList.remove('hidden');
+            document.getElementById('proofPreviewWrapper').classList.add('hidden');
+
+            // Populate summary
+            document.getElementById('checkoutItemCount').textContent = `${cart.length} Jenis Bumbu`;
+            document.getElementById('checkoutTotalDisplay').textContent = formatRupiah(getCartTotal());
+            
+            const summaryList = document.getElementById('checkoutSummaryList');
+            summaryList.innerHTML = cart.map(item => {
+                const qtyUnit = item.category === 'kg' ? 'kg' : 'pcs';
+                const sub = Math.round(item.unitPrice * item.qty);
+                return `
+                <div class="flex justify-between">
+                    <span>${item.name} (${item.variantLabel}) x ${item.qty} ${qtyUnit}</span>
+                    <span class="font-semibold text-slate-800">${formatRupiah(sub)}</span>
+                </div>`;
+            }).join('');
+
+            renderQrisInto('qrisDisplayContainer');
+            document.getElementById('checkoutModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function handleProofUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentProofBase64 = e.target.result;
+                document.getElementById('proofPreviewImg').src = currentProofBase64;
+                document.getElementById('proofUploadPlaceholder').classList.add('hidden');
+                document.getElementById('proofPreviewWrapper').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+
+            if (!currentProofBase64) {
+                showToast('Wajib upload screenshot bukti bayar QRIS!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('buyerName').value.trim();
+            const wa = document.getElementById('buyerWa').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim();
+            const address = document.getElementById('buyerAddress').value.trim();
+
+            const orderId = 'ABC-' + Date.now().toString().slice(-6);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+            const total = getCartTotal();
+
+            const newOrder = {
+                orderId,
+                date: dateStr,
+                customer: { name, wa, email, address },
+                items: JSON.parse(JSON.stringify(cart)),
+                total,
+                proofThumb: currentProofBase64
+            };
+
+            // Save order to localStorage (keep last 20 orders)
+            orders.unshift(newOrder);
+            if (orders.length > 20) orders.pop();
+
+            // Clear cart
+            cart = [];
+            saveState();
+            renderCart();
+
+            // Close checkout & open Invoice Confirmation
+            closeCheckoutModal();
+            showOrderConfirmation(newOrder);
+            showToast('Pesanan berhasil dibuat & bukti terlampir!');
+        }
+
+        function showOrderConfirmation(order) {
+            document.getElementById('invCustomerEmailBadge').textContent = order.customer.email;
+            document.getElementById('invOrderId').textContent = order.orderId;
+            document.getElementById('invOrderDate').textContent = order.date;
+            document.getElementById('invName').textContent = order.customer.name;
+            document.getElementById('invWa').textContent = order.customer.wa;
+            document.getElementById('invEmail').textContent = order.customer.email;
+            document.getElementById('invAddress').textContent = order.customer.address;
+            document.getElementById('invTotal').textContent = formatRupiah(order.total);
+            document.getElementById('invProofThumb').src = order.proofThumb;
+
+            const itemsTextLines = [];
+            document.getElementById('invItemsList').innerHTML = order.items.map(item => {
+                const qtyUnit = item.category === 'kg' ? 'kg' : 'pcs';
+                const sub = Math.round(item.unitPrice * item.qty);
+                itemsTextLines.push(`- ${item.name} (${item.variantLabel}) x ${item.qty} ${qtyUnit} = ${formatRupiah(sub)}`);
+                return `
+                <div class="flex justify-between">
+                    <span>${item.name} (${item.variantLabel}) x ${item.qty} ${qtyUnit}</span>
+                    <strong class="text-slate-800">${formatRupiah(sub)}</strong>
+                </div>`;
+            }).join('');
+
+            // Build WhatsApp Message to Admin (085624383827)
+            const waMessage = 
+`*KONFIRMASI PESANAN - ANEKA BUMBU CIMAHI*
+ID Pesanan: *${order.orderId}*
+Waktu: ${order.date}
+
+*Data Penerima:*
+• Nama: ${order.customer.name}
+• No. WA: ${order.customer.wa}
+• Email: ${order.customer.email}
+• Alamat: ${order.customer.address}
+
+*Daftar Belanja:*
+${itemsTextLines.join('\n')}
+
+*Total Pembayaran (QRIS): ${formatRupiah(order.total)}*
+Status: *Sudah Upload Bukti Transfer QRIS* (Saya lampirkan screenshot bukti bayar di chat ini).`;
+
+            const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
+            document.getElementById('btnForwardWaAdmin').href = waUrl;
+
+            // Build Mailto Link to Admin (sarlyoctavianikartasasmita@gmail.com)
+            const emailSubject = `[Pesanan Baru #${order.orderId}] Aneka Bumbu Cimahi - ${order.customer.name}`;
+            const mailtoAdminUrl = `mailto:${ADMIN_EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(waMessage.replace(/\*/g, ''))}`;
+            document.getElementById('btnForwardEmailAdmin').href = mailtoAdminUrl;
+
+            // Build Mailto Link for Customer Receipt Copy
+            const customerSubject = `Konfirmasi Pesanan #${order.orderId} - Aneka Bumbu Cimahi`;
+            const customerBody = `Terima kasih telah berbelanja di Aneka Bumbu Cimahi (www.anekabumbucimahi.github.io)!\n\nBerikut rincian pesanan Anda:\n\n` + waMessage.replace(/\*/g, '');
+            const mailtoCustomerUrl = `mailto:${order.customer.email}?subject=${encodeURIComponent(customerSubject)}&body=${encodeURIComponent(customerBody)}`;
+            document.getElementById('btnCopyReceiptToBuyer').href = mailtoCustomerUrl;
+
+            document.getElementById('invoiceModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').classList.add('hidden');
+        }
+
+        // =====================================================================
+        // 7. ADMIN PANEL (EASY PRICE & QRIS MANAGEMENT)
+        // =====================================================================
+        function openAdminLogin() {
+            document.getElementById('adminPinInput').value = '';
+            document.getElementById('adminPinError').classList.add('hidden');
+            document.getElementById('adminLoginBox').classList.remove('hidden');
+            document.getElementById('adminDashboardBox').classList.add('hidden');
+            document.getElementById('adminModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin === ADMIN_PIN) {
+                document.getElementById('adminLoginBox').classList.add('hidden');
+                document.getElementById('adminDashboardBox').classList.remove('hidden');
+                renderAdminDashboard();
+            } else {
+                document.getElementById('adminPinError').classList.remove('hidden');
+            }
+        }
+
+        function switchAdminTab(tab) {
+            ['prices', 'qris', 'orders'].forEach(t => {
+                document.getElementById(`adminTab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tabBtn-${t}`);
+                btn.classList.remove('border-tokped-500', 'text-tokped-600');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById(`adminTab-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tabBtn-${tab}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-tokped-500', 'text-tokped-600');
+
+            if (tab === 'qris') renderQrisInto('adminQrisPreview');
+            if (tab === 'orders') renderAdminOrders();
+        }
+
+        function renderAdminDashboard() {
+            document.getElementById('adminOrderCount').textContent = orders.length;
+            const list = document.getElementById('adminProductList');
+
+            list.innerHTML = products.map((p, idx) => {
+                const isKg = p.category === 'kg';
+                return `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-lg overflow-hidden border border-slate-200 bg-white shrink-0">
+                                ${getSpiceIllustration(p.id)}
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-sm text-slate-800">${p.name}</h5>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded ${isKg ? 'bg-amber-100 text-amber-800' : 'bg-tokped-100 text-tokped-800'}">
+                                    ${isKg ? 'Satuan Harga / Kg' : 'Satuan Harga / Pcs (Varian Gram)'}
+                                </span>
+                            </div>
+                        </div>
+                        <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold">
+                            <input type="checkbox" id="admin-stock-${p.id}" ${p.inStock ? 'checked' : ''} class="w-4 h-4 accent-tokped-500 rounded">
+                            <span class="text-slate-700">Stok Tersedia</span>
+                        </label>
+                    </div>
+
+                    ${isKg ? `
+                    <div class="max-w-xs">
+                        <label class="block text-[11px] font-semibold text-slate-600 mb-1">Harga per 1 Kg (Rp):</label>
+                        <input type="number" id="admin-price-kg-${p.id}" value="${p.pricePerKg}" step="500" min="0"
+                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-800 focus:border-tokped-500 focus:outline-none">
+                    </div>
+                    ` : `
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                        ${GRAM_OPTIONS.map(gram => `
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Varian ${gram} (Rp):</label>
+                            <input type="number" id="admin-price-${p.id}-${gram}" value="${p.variants[gram]}" step="100" min="0"
+                                class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:border-tokped-500 focus:outline-none">
+                        </div>
+                        `).join('')}
+                    </div>
+                    `}
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function saveAdminPrices() {
+            products.forEach(p => {
+                const stockCheckbox = document.getElementById(`admin-stock-${p.id}`);
+                if (stockCheckbox) p.inStock = stockCheckbox.checked;
+
+                if (p.category === 'kg') {
+                    const input = document.getElementById(`admin-price-kg-${p.id}`);
+                    if (input && input.value !== '') {
+                        p.pricePerKg = Math.max(0, Number(input.value));
+                    }
+                } else {
+                    GRAM_OPTIONS.forEach(gram => {
+                        const input = document.getElementById(`admin-price-${p.id}-${gram}`);
+                        if (input && input.value !== '') {
+                            p.variants[gram] = Math.max(0, Number(input.value));
+                        }
+                    });
+                }
+            });
+
+            saveState();
+            renderProducts();
+            showToast('Semua harga & stok berhasil diperbarui!');
+        }
+
+        function uploadNewQris(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                customQris = e.target.result;
+                localStorage.setItem('abc_qris', customQris);
+                renderQrisInto('adminQrisPreview');
+                showToast('Barcode QRIS toko berhasil diperbarui!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetDefaultQris() {
+            customQris = null;
+            localStorage.removeItem('abc_qris');
+            renderQrisInto('adminQrisPreview');
+            showToast('QRIS dikembalikan ke bawaan sistem.');
+        }
+
+        function resetDefaultData() {
+            products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            saveState();
+            renderAdminDashboard();
+            renderProducts();
+            showToast('Semua harga bumbu dikembalikan ke harga awal.');
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('adminOrdersList');
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs">Belum ada pesanan yang masuk di perangkat ini.</div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => `
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2">
+                <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-200 pb-2">
+                    <div>
+                        <span class="font-mono font-bold text-tokped-700 text-sm">${ord.orderId}</span>
+                        <span class="text-slate-400 ml-2">${ord.date}</span>
+                    </div>
+                    <span class="font-extrabold text-sm text-slate-800">${formatRupiah(ord.total)}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <p><strong>Penerima:</strong> ${ord.customer.name} (${ord.customer.wa})</p>
+                        <p><strong>Email:</strong> ${ord.customer.email}</p>
+                        <p><strong>Alamat:</strong> ${ord.customer.address}</p>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200">
+                        <p class="font-bold text-slate-600 mb-1">Item:</p>
+                        ${ord.items.map(i => `<p>• ${i.name} (${i.variantLabel}) x ${i.qty}</p>`).join('')}
+                    </div>
+                </div>
+            </div>
+            `).join('');
+        }
+
+        // =====================================================================
+        // 8. INITIALIZE APP ON LOAD
+        // =====================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            updateCartBadge();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
